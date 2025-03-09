@@ -45,7 +45,10 @@ describe('setupWebSocket', () => {
     
     // Mock clearTimeout
     vi.spyOn(window, 'clearTimeout').mockImplementation(() => {});
-    vi.spyOn(window, 'setTimeout').mockImplementation(() => 1);
+    // Fix: Use NodeJS.Timeout type for setTimeout mock
+    vi.spyOn(window, 'setTimeout').mockImplementation(() => {
+      return 1 as unknown as NodeJS.Timeout;
+    });
   });
   
   afterEach(() => {
