@@ -15,11 +15,11 @@ export const ConnectionIndicator = ({ status }: ConnectionStatusProps) => {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
-    // Only hide when connected after 5 seconds
+    // Only hide when connected after 10 seconds
     if (status === "connected") {
       timeout = setTimeout(() => {
         setVisible(false);
-      }, 5000);
+      }, 10000);
     } else {
       setVisible(true);
     }
@@ -35,19 +35,19 @@ export const ConnectionIndicator = ({ status }: ConnectionStatusProps) => {
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium animate-fade-in",
+        "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium animate-fade-in shadow-sm",
         status === "connected" && "bg-green-100 text-green-800 border border-green-200",
         status === "disconnected" && "bg-red-100 text-red-800 border border-red-200",
         status === "connecting" && "bg-yellow-100 text-yellow-800 border border-yellow-200"
       )}
     >
-      {status === "connected" && <Wifi className="w-3.5 h-3.5" />}
-      {status === "disconnected" && <WifiOff className="w-3.5 h-3.5" />}
-      {status === "connecting" && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+      {status === "connected" && <Wifi className="w-4 h-4" />}
+      {status === "disconnected" && <WifiOff className="w-4 h-4" />}
+      {status === "connecting" && <Loader2 className="w-4 h-4 animate-spin" />}
       <span>
-        {status === "connected" && "Connected"}
-        {status === "disconnected" && "Disconnected"}
-        {status === "connecting" && "Connecting..."}
+        {status === "connected" && "Connected to chat"}
+        {status === "disconnected" && "Disconnected from chat"}
+        {status === "connecting" && "Connecting to chat..."}
       </span>
     </div>
   );

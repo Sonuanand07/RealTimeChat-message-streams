@@ -24,6 +24,8 @@ const ChatApp = () => {
   
   // Connect to WebSocket
   useEffect(() => {
+    // The WebSocket URL should be configurable through an environment variable,
+    // but we'll hardcode it for simplicity here
     const wsUrl = "ws://localhost:8000/ws";
     let reconnectTimer: NodeJS.Timeout;
     let reconnectAttempts = 0;

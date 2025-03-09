@@ -9,7 +9,7 @@ interface MessageBubbleProps {
 }
 
 export const MessageBubble = ({ message, showTimestamp = true }: MessageBubbleProps) => {
-  const { content, timestamp, isSelf } = message;
+  const { content, timestamp, isSelf, sender } = message;
   
   const formattedTime = formatDistanceToNow(new Date(timestamp), {
     addSuffix: true,
@@ -17,9 +17,14 @@ export const MessageBubble = ({ message, showTimestamp = true }: MessageBubblePr
   });
   
   return (
-    <div className={cn("flex flex-col mb-2", isSelf ? "items-end" : "items-start")}>
+    <div className={cn("flex flex-col mb-3", isSelf ? "items-end" : "items-start")}>
+      {!isSelf && (
+        <span className="text-xs font-medium text-muted-foreground ml-3 mb-1">
+          User: {sender.substring(0, 6)}
+        </span>
+      )}
       <div className={cn(
-        "max-w-[80%] rounded-lg p-3 break-words",
+        "max-w-[80%] rounded-lg p-3 break-words shadow-sm",
         isSelf 
           ? "bg-primary text-primary-foreground rounded-tr-none" 
           : "bg-muted rounded-tl-none"
