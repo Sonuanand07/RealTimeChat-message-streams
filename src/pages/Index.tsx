@@ -4,23 +4,135 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { ConnectionIndicator } from "@/components/ConnectionStatus";
 import { MessageInput } from "@/components/MessageInput";
 import { MessageList } from "@/components/MessageList";
-import { MessageType, ConnectionStatus, setupWebSocket } from "@/utils/websocketUtils";
+import { toast } from "sonner";
+
+export type MessageType = {
+  id: string;
+  sender: string;
+  content: string;
+  timestamp: number;
+  isSelf: boolean;
+};
+
+export type ConnectionStatus = "connected" | "disconnected" | "connecting";
 
 const ChatApp = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [status, setStatus] = useState<ConnectionStatus>("connecting");
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [userId] = useState(() => Math.random().toString(36).substring(2, 10));
   
-  // Add message to the list
-  const addMessage = useCallback((message: MessageType) => {
-    setMessages(prev => [...prev, message]);
-  }, []);
+  // Connect to WebSocket
+  useEffect(() => {
+    const wsUrl = "ws://localhost:8000/ws";
+    let reconnectTimer: NodeJS.Timeout;
+    let reconnectAttempts = 0;
+    const MAX_RECONNECT_ATTEMPTS = 5;
+    const RECONNECT_DELAY = 2000;
+    
+    const connect = () => {
+      try {
+        setStatus("connecting");
+        const newSocket = new WebSocket(wsUrl);
+        
+        newSocket.onopen = () => {
+          console.log("WebSocket connected");
+          setStatus("connected");
+          reconnectAttempts = 0;
+          toast.success("Connected to chat room");
+        };
+        
+        newSocket.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            const isSelf = data.sender === userId;
+            
+            const message: MessageType = {
+              id: data.id || generateMessageId(),
+              sender: data.sender,
+              content: data.content,
+              timestamp: data.timestamp || Date.now(),
+              isSelf
+            };
+            
+            setMessages(prev => [...prev, message]);
+          } catch (error) {
+            console.error("Error parsing message:", error);
+          }
+        };
+        
+        newSocket.onclose = (event) => {
+          console.log("WebSocket closed:", event.code, event.reason);
+          setStatus("disconnected");
+          setSocket(null);
+          
+          // Attempt reconnection
+          if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+            reconnectAttempts++;
+            toast.info(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+            reconnectTimer = setTimeout(connect, RECONNECT_DELAY);
+          } else {
+            toast.error("Failed to connect. Please refresh the page to try again.");
+          }
+        };
+        
+        newSocket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          setStatus("disconnected");
+          newSocket.close();
+        };
+        
+        setSocket(newSocket);
+      } catch (error) {
+        console.error("Failed to connect:", error);
+        setStatus("disconnected");
+        
+        // Attempt reconnection
+        if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+          reconnectAttempts++;
+          toast.info(`Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+          reconnectTimer = setTimeout(connect, RECONNECT_DELAY);
+        } else {
+          toast.error("Failed to connect. Please refresh the page to try again.");
+        }
+      }
+    };
+    
+    connect();
+    
+    // Cleanup on unmount
+    return () => {
+      clearTimeout(reconnectTimer);
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [userId]);
   
-  // Setup WebSocket
-  const { sendMessage } = setupWebSocket(setStatus, addMessage);
+  // Generate message ID
+  const generateMessageId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
+  };
   
   // Handle sending a message
   const handleSendMessage = (content: string) => {
-    sendMessage(content);
+    if (!content.trim() || !socket || socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    
+    const message = {
+      id: generateMessageId(),
+      sender: userId,
+      content: content.trim(),
+      timestamp: Date.now()
+    };
+    
+    try {
+      socket.send(JSON.stringify(message));
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message");
+    }
   };
   
   return (

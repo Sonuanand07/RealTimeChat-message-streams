@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from "react";
-import { MessageType } from "@/utils/websocketUtils";
 import { MessageBubble } from "./MessageBubble";
+import { MessageType } from "@/pages/Index";
 
 interface MessageListProps {
   messages: MessageType[];
@@ -28,7 +28,7 @@ export const MessageList = ({ messages }: MessageListProps) => {
   }
   
   return (
-    <div className="flex-1 overflow-y-auto p-4 messages-container">
+    <div className="flex-1 overflow-y-auto p-4 messages-container w-full">
       {messages.map((message) => (
         <MessageBubble key={message.id} message={message} />
       ))}

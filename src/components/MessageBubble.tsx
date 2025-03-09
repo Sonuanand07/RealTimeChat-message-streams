@@ -1,6 +1,6 @@
 
 import { formatDistanceToNow } from "date-fns";
-import { MessageType } from "@/utils/websocketUtils";
+import { MessageType } from "@/pages/Index";
 import { cn } from "@/lib/utils";
 
 interface MessageBubbleProps {

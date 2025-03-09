@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Wifi, WifiOff, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ConnectionStatus } from "@/utils/websocketUtils";
+import { ConnectionStatus } from "@/pages/Index";
 
 interface ConnectionStatusProps {
   status: ConnectionStatus;

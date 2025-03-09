@@ -1,7 +1,7 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { MessageInput } from '../components/MessageInput';
+import { MessageInput } from '../../components/MessageInput';
 
 describe('MessageInput Component', () => {
   const mockSendMessage = vi.fn();

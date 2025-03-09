@@ -34,7 +34,7 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
   };
   
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 w-full">
+    <form onSubmit={handleSubmit} className="flex gap-2 w-full" role="form">
       <input
         ref={inputRef}
         type="text"
@@ -53,7 +53,7 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
         type="submit"
         className={cn(
           "send-button",
-          disabled && "opacity-70 cursor-not-allowed bg-muted text-muted-foreground"
+          disabled || !message.trim() ? "opacity-70 cursor-not-allowed bg-muted text-muted-foreground" : ""
         )}
         disabled={disabled || !message.trim()}
         aria-label="Send message"
