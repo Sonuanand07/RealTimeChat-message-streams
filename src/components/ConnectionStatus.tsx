@@ -35,10 +35,10 @@ export const ConnectionIndicator = ({ status }: ConnectionStatusProps) => {
   return (
     <div
       className={cn(
-        "connection-indicator animate-fade-in",
-        status === "connected" && "connection-connected",
-        status === "disconnected" && "connection-disconnected",
-        status === "connecting" && "connection-connecting"
+        "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium animate-fade-in",
+        status === "connected" && "bg-green-100 text-green-800 border border-green-200",
+        status === "disconnected" && "bg-red-100 text-red-800 border border-red-200",
+        status === "connecting" && "bg-yellow-100 text-yellow-800 border border-yellow-200"
       )}
     >
       {status === "connected" && <Wifi className="w-3.5 h-3.5" />}

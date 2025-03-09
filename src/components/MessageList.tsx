@@ -21,14 +21,14 @@ export const MessageList = ({ messages }: MessageListProps) => {
         <div className="text-4xl mb-2">👋</div>
         <h3 className="text-lg font-medium mb-1">Welcome to the Chat Room</h3>
         <p className="text-muted-foreground text-sm">
-          Start the conversation by sending a message.
+          Start the conversation by sending a message. Your messages will appear on the right, and others' messages on the left.
         </p>
       </div>
     );
   }
   
   return (
-    <div className="flex-1 overflow-y-auto p-4 messages-container w-full">
+    <div className="flex-1 overflow-y-auto p-4 space-y-4 w-full">
       {messages.map((message) => (
         <MessageBubble key={message.id} message={message} />
       ))}

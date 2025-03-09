@@ -33,10 +33,11 @@ const ChatApp = () => {
     const connect = () => {
       try {
         setStatus("connecting");
+        console.log("Attempting to connect to:", wsUrl);
         const newSocket = new WebSocket(wsUrl);
         
         newSocket.onopen = () => {
-          console.log("WebSocket connected");
+          console.log("WebSocket connected successfully");
           setStatus("connected");
           reconnectAttempts = 0;
           toast.success("Connected to chat room");
@@ -45,6 +46,15 @@ const ChatApp = () => {
         newSocket.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
+            console.log("Received message:", data);
+            
+            // Check if this is an error message from the server
+            if (data.error) {
+              toast.error(data.error);
+              return;
+            }
+            
+            // Determine if this message is from the current user
             const isSelf = data.sender === userId;
             
             const message: MessageType = {
@@ -79,7 +89,7 @@ const ChatApp = () => {
         newSocket.onerror = (error) => {
           console.error("WebSocket error:", error);
           setStatus("disconnected");
-          newSocket.close();
+          // We don't call close here as the onclose handler will be triggered automatically
         };
         
         setSocket(newSocket);
@@ -117,6 +127,9 @@ const ChatApp = () => {
   // Handle sending a message
   const handleSendMessage = (content: string) => {
     if (!content.trim() || !socket || socket.readyState !== WebSocket.OPEN) {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        toast.error("Not connected to chat room");
+      }
       return;
     }
     
@@ -128,6 +141,7 @@ const ChatApp = () => {
     };
     
     try {
+      console.log("Sending message:", message);
       socket.send(JSON.stringify(message));
     } catch (error) {
       console.error("Error sending message:", error);
@@ -137,14 +151,15 @@ const ChatApp = () => {
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 p-4">
-      <div className="w-full max-w-lg flex flex-col">
+      <div className="w-full max-w-md flex flex-col">
         <div className="mb-3 self-center">
           <ConnectionIndicator status={status} />
         </div>
         
-        <Card className="flex-1 flex flex-col shadow-lg border-slate-200/70 rounded-2xl overflow-hidden">
+        <Card className="flex-1 flex flex-col shadow-lg border-slate-200/70 rounded-2xl overflow-hidden h-[80vh]">
           <CardHeader className="border-b border-slate-100 py-4 px-6">
             <h2 className="text-lg font-medium animate-fade-in">Chat Room</h2>
+            <p className="text-sm text-muted-foreground">Your ID: {userId.substring(0, 6)}</p>
           </CardHeader>
           
           <CardContent className="flex-1 flex p-0 overflow-hidden">

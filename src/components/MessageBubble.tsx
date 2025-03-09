@@ -18,7 +18,12 @@ export const MessageBubble = ({ message, showTimestamp = true }: MessageBubblePr
   
   return (
     <div className={cn("flex flex-col mb-2", isSelf ? "items-end" : "items-start")}>
-      <div className={isSelf ? "message-sent" : "message-received"}>
+      <div className={cn(
+        "max-w-[80%] rounded-lg p-3 break-words",
+        isSelf 
+          ? "bg-primary text-primary-foreground rounded-tr-none" 
+          : "bg-muted rounded-tl-none"
+      )}>
         {content}
       </div>
       {showTimestamp && (
