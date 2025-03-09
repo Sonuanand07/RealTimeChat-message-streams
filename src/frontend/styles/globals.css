@@ -1,0 +1,128 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 211 100% 50%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+
+    --radius: 1rem;
+
+    --chat-sent: 211 100% 50%;
+    --chat-sent-foreground: 0 0% 100%;
+    --chat-received: 240 5% 96%;
+    --chat-received-foreground: 240 10% 3.9%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .message-bubble {
+    @apply px-4 py-2 rounded-2xl max-w-[80%] break-words;
+  }
+  
+  .message-sent {
+    @apply message-bubble bg-chat-sent text-chat-sent-foreground ml-auto rounded-br-sm;
+    animation: scale-in 0.15s ease-out forwards;
+  }
+  
+  .message-received {
+    @apply message-bubble bg-chat-received text-chat-received-foreground rounded-bl-sm;
+    animation: scale-in 0.15s ease-out forwards;
+  }
+
+  .connection-indicator {
+    @apply flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all duration-300;
+  }
+  
+  .connection-connected {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .connection-disconnected {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .connection-connecting {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Custom scrollbar for message container */
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Message input styles */
+.message-input {
+  @apply w-full px-4 py-3 rounded-full bg-white border border-slate-200 
+         focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+         transition-all duration-200 ease-in-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* Send button styles */
+.send-button {
+  @apply p-3 rounded-full bg-primary text-white flex items-center justify-center
+         hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/40
+         transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95;
+}
