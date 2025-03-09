@@ -1,5 +1,4 @@
-
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export type MessageType = {
   id: string;
@@ -17,12 +16,10 @@ export interface WebSocketState {
   sendMessage: (content: string) => void;
 }
 
-// Generate a random user ID for this session
 const generateUserId = () => {
   return Math.random().toString(36).substring(2, 10);
 };
 
-// Generate a unique message ID
 const generateMessageId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
 };
@@ -33,8 +30,6 @@ export const setupWebSocket = (
   setStatus: (status: ConnectionStatus) => void,
   addMessage: (message: MessageType) => void
 ): WebSocketState => {
-  // WebSocket connection URL
-  // In a real app, this would come from an environment variable
   const wsUrl = "ws://localhost:8000/ws";
   
   let socket: WebSocket | null = null;
@@ -43,7 +38,6 @@ export const setupWebSocket = (
   const MAX_RECONNECT_ATTEMPTS = 5;
   const RECONNECT_DELAY = 2000; // 2 seconds
   
-  // Initialize WebSocket connection
   const connect = () => {
     try {
       setStatus("connecting");
@@ -59,7 +53,6 @@ export const setupWebSocket = (
       socket.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          // Check if this is our own message or from another user
           const isSelf = data.sender === userId;
           
           const message: MessageType = {
@@ -94,7 +87,6 @@ export const setupWebSocket = (
     }
   };
   
-  // Attempt to reconnect
   const attemptReconnect = () => {
     if (reconnectTimer !== null) {
       window.clearTimeout(reconnectTimer);
@@ -109,7 +101,6 @@ export const setupWebSocket = (
     }
   };
   
-  // Send a message
   const sendMessage = (content: string) => {
     if (!content.trim() || socket?.readyState !== WebSocket.OPEN) {
       return;
@@ -130,10 +121,8 @@ export const setupWebSocket = (
     }
   };
   
-  // Initialize connection
   connect();
   
-  // Return the WebSocket state and functions
   return {
     status: "connecting",
     messages: [],
