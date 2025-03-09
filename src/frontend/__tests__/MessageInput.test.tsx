@@ -1,9 +1,10 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { MessageInput } from '../components/MessageInput';
 
 describe('MessageInput Component', () => {
-  const mockSendMessage = jest.fn();
+  const mockSendMessage = vi.fn();
 
   beforeEach(() => {
     mockSendMessage.mockClear();

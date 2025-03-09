@@ -1,14 +1,14 @@
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   // Redirect to chat page
   useEffect(() => {
-    router.push('/chat');
-  }, [router]);
+    navigate('/chat');
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

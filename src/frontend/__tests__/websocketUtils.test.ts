@@ -1,4 +1,5 @@
 
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { setupWebSocket } from '../utils/websocketUtils';
 import { ConnectionStatus, MessageType } from '../utils/types';
 
@@ -12,16 +13,16 @@ class MockWebSocket {
   
   constructor(public url: string) {}
   
-  send = jest.fn();
-  close = jest.fn();
+  send = vi.fn();
+  close = vi.fn();
 }
 
 // Mock toast
-jest.mock('sonner', () => ({
+vi.mock('sonner', () => ({
   toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-    info: jest.fn()
+    success: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn()
   }
 }));
 
@@ -29,22 +30,22 @@ jest.mock('sonner', () => ({
 const OriginalWebSocket = global.WebSocket;
 
 describe('setupWebSocket', () => {
-  let mockSetStatus: jest.Mock;
-  let mockAddMessage: jest.Mock;
+  let mockSetStatus: ReturnType<typeof vi.fn>;
+  let mockAddMessage: ReturnType<typeof vi.fn>;
   let mockWebSocket: MockWebSocket;
   
   beforeEach(() => {
     // Reset mocks
-    mockSetStatus = jest.fn();
-    mockAddMessage = jest.fn();
+    mockSetStatus = vi.fn();
+    mockAddMessage = vi.fn();
     
     // Mock WebSocket
     mockWebSocket = new MockWebSocket('ws://localhost:8000/ws');
-    (global as any).WebSocket = jest.fn(() => mockWebSocket);
+    (global as any).WebSocket = vi.fn(() => mockWebSocket);
     
     // Mock clearTimeout
-    jest.spyOn(window, 'clearTimeout').mockImplementation(() => {});
-    jest.spyOn(window, 'setTimeout').mockImplementation(() => 1);
+    vi.spyOn(window, 'clearTimeout').mockImplementation(() => {});
+    vi.spyOn(window, 'setTimeout').mockImplementation(() => 1);
   });
   
   afterEach(() => {
